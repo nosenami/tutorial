@@ -1,4 +1,1 @@
-hello
-good
-test
-https
+HELLO
