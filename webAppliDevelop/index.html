@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <title>ｗｅｂアプリ開発</title>     
+  <script>
+    
+    //カウントアップする変数。
+    let count = 0;    
+
+    //ボタンが押されるたびに、カウントアップする変数に
+    //１を足して画面に設定する。
+    function countUp() {
+      count = count + 1;
+      document.getElementById("countText").value = count;
+    }
+
+  </script>
+</head>
+<body>
+  課題：webアプリ開発 1-1. カウントアップできるようにする
+  <br><br>
+
+  <input type="text" id="countText" value="0" disabled>
+  <br><br>
+
+  <input type="button" value="カウントアップする。" onclick="countUp()">
+
+</body>
+</html>
+
