@@ -2,20 +2,7 @@
 <html>
 <head>
   <base target="_top">
-  <title>ｗｅｂアプリ開発</title>     
-  <script>
-    
-    //カウントアップする変数。
-    let count = 0;    
-
-    //ボタンが押されるたびに、カウントアップする変数に
-    //１を足して画面に設定する。
-    function countUp() {
-      count = count + 1;
-      document.getElementById("countText").value = count;
-    }
-
-  </script>
+  <title>ｗｅｂアプリ開発</title>
 </head>
 <body>
   課題：webアプリ開発 1-1. カウントアップできるようにする
@@ -26,6 +13,19 @@
 
   <input type="button" value="カウントアップする。" onclick="countUp()">
 
+  <script>
+
+    //カウントアップする変数。
+    let count = 0;
+
+    //ボタンが押されるたびに、カウントアップする変数に
+    //１を足して画面に設定する。
+    function countUp() {
+      count++;
+      document.getElementById("countText").value = count;
+    }
+
+  </script>
+
 </body>
 </html>
-
