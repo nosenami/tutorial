@@ -5,13 +5,16 @@
   <title>ｗｅｂアプリ開発</title>
 </head>
 <body>
-  課題：webアプリ開発 1-1. カウントアップできるようにする
-  <br><br>
+  課題：webアプリ開発<br>
+  　1-1. カウントアップできるようにする<br>
+  　1-2. リセットできるようにする<br>
+  <br>
 
   <input type="text" id="countText" value="0" disabled>
   <br><br>
 
-  <input type="button" value="カウントアップする。" onclick="countUp()">
+  <input type="button" value="カウントアップする。" onclick="countUp()">　
+  <input type="button" value="カウントをリセットする。" onclick="countReset()">
 
   <script>
 
@@ -22,6 +25,12 @@
     //１を足して画面に設定する。
     function countUp() {
       count++;
+      document.getElementById("countText").value = count;
+    }
+
+    //カウントアップする変数を０にする。
+    function countReset() {
+      count = 0;
       document.getElementById("countText").value = count;
     }
 
