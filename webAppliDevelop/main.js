@@ -15,8 +15,9 @@ function doGet() {
 
 // https://docs.google.com/spreadsheets/d/1ws3hGT_qzSuvuOQ1QJ1xlbZgMPk1MaU_EdpCsIQNREo/edit#gid=0
 // https://docs.google.com/spreadsheets/d/この部分がシートID/edit#gid=0
-const SHEET_ID = '1ws3hGT_qzSuvuOQ1QJ1xlbZgMPk1MaU_EdpCsIQNREo'
-const SHEET_NAME = 'カウンタ値シート'
+const SHEET_ID = '1ws3hGT_qzSuvuOQ1QJ1xlbZgMPk1MaU_EdpCsIQNREo';
+const SHEET_NAME = 'カウンタ値シート';
+const CELL = 'A1';
 
 
 ///////////////////////////////////////////////////
@@ -28,6 +29,19 @@ function saveToSpreadSheet(count) {
 
   const spreadsheet = SpreadsheetApp.openById(SHEET_ID);
   const sheet = spreadsheet.getSheetByName(SHEET_NAME);
-  const range = sheet.getRange('A1');
+  const range = sheet.getRange(CELL);
   range.setValue(count);
+}
+
+
+/**
+ * スプレッドシートの値を取得し返却する。
+ * @returns スプレッドシートのA1セルの値。（カウンターの値。）
+ */
+function loadFromSpreadSheet() {
+
+  const spreadsheet = SpreadsheetApp.openById(SHEET_ID);
+  const sheet = spreadsheet.getSheetByName(SHEET_NAME);
+  const range = sheet.getRange(CELL);
+  return range.getValue();
 }
