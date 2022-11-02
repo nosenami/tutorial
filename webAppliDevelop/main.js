@@ -1,18 +1,15 @@
-///////////////////////////////////////////////////
-//
-// 画面を初期表示する。
-//
-
+/**
+ * 画面を初期表示する。
+ * @returns index.htmlの画面のHtmlServiceオブジェクト。
+ */
 function doGet() {
     return HtmlService.createTemplateFromFile('index').evaluate();
 }
 
 
-///////////////////////////////////////////////////
-//
-// カウントアップした値を保存するスプレッドシートの定義
-//
-
+/**
+ * カウントアップした値を保存するスプレッドシートの定義
+ */
 // https://docs.google.com/spreadsheets/d/1ws3hGT_qzSuvuOQ1QJ1xlbZgMPk1MaU_EdpCsIQNREo/edit#gid=0
 // https://docs.google.com/spreadsheets/d/この部分がシートID/edit#gid=0
 const SHEET_ID = '1ws3hGT_qzSuvuOQ1QJ1xlbZgMPk1MaU_EdpCsIQNREo';
@@ -20,11 +17,10 @@ const SHEET_NAME = 'カウンタ値シート';
 const CELL = 'A1';
 
 
-///////////////////////////////////////////////////
-//
-// スプレッドシートに引数の値を保存する。
-//
-
+/**
+ * スプレッドシートに引数の値を保存する。
+ * @param {*} count スプレッドシートのA1セルに保存する値。（カウンターの値。）
+ */
 function saveToSpreadSheet(count) {
 
   const spreadsheet = SpreadsheetApp.openById(SHEET_ID);
