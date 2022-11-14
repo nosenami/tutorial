@@ -55,76 +55,91 @@
 
   </style>
 </head>
-<body onload="countLoad()">
+<body>
   課題：webアプリ開発<br>
   ・1-1. カウントアップできるようにする<br>
   ・1-2. リセットできるようにする<br>
   ・1-3. 見た目をいい感じにしてみる<br>
   ・2-1. カウント結果を保存できるようにする<br>
   ・2-2. 前回保存時のカウンターを表示できるようにする<br>
+  ・3-1. Vue.jsを導入して作り替える<br>
   <br>
 
-  <table >
-    <tr>
-      <td colspan="2">
-        <input type="text" value="" disabled id="countText">
-      </td>
-    </tr>
-    <tr>
-      <td align="center" colspan="2">
-        <input type="button" value="カウントアップ" onclick="countUp()" class="buttonStyle bigButtonStyle">
-      </td>
-    </tr>
-    <tr>
-      <td align="left">
-        <input type="button" value="リセット" onclick="countReset()" class="buttonStyle smallButtonStyle">
-      </td>
-      <td align="right">
-        <input type="button" value="　保存　" onclick="countSave()" class="buttonStyle smallButtonStyle">
-      </td>
-    </tr>
-  </table>
+  <div id="app">
 
+    <table >
+      <tr>
+        <td colspan="2">
+          <input type="text" v-bind:value="count" disabled id="countText">
+        </td>
+      </tr>
+      <tr>
+        <td align="center" colspan="2">
+          <input type="button" value="カウントアップ" v-on:click="countUp" class="buttonStyle bigButtonStyle">
+        </td>
+      </tr>
+      <tr>
+        <td align="left">
+          <input type="button" value="リセット" v-on:click="countReset" class="buttonStyle smallButtonStyle">
+        </td>
+        <td align="right">
+          <input type="button" value="　保存　" v-on:click="countSave" class="buttonStyle smallButtonStyle">
+       </td>
+      </tr>
+    </table>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11/dist/vue.js"></script>
   <script>
+    var app = new Vue({
 
-    //カウントアップする変数。
-    let count = 0;
+      el:'#app',
 
-    //カウントアップする変数に
-    //１を足して画面に表示する。
-    function countUp() {
-      setCounterDisplay(count+1);
-    }
+      data:{
+        //カウントアップする変数。
+        count:""
+      },
 
-    //カウントアップする変数を
-    //０にして画面に表示する。
-    function countReset() {
-      setCounterDisplay(0);
-    }
+      //初回（<body onload… のイメージ）
+      //カウントアップする変数を外部から取得して画面に表示する。
+      created:function(){
+        google.script.run.withSuccessHandler( this.setCounterDisplay ).loadFromSpreadSheet();
+        //google.script.run.withSuccessHandler(～).～ とは、
+        //外部からの取得（main.jsのloadFromSpreadSheet）が終わってから、
+        //カウンター表示部への設定（index.htmlのsetCounterDisplay）を行うということ。
+        //こうしないと、loadFromSpreadSheetを実行してmain.jsの処理を行うのと、
+        //index.htmlの次行の処理を行うのが平行になり、
+        //loadFromSpreadSheetのリターンをまたずに画面表示しようとしてundefinedが表示される。
+      },
 
-    //カウントアップする変数を外部に保存する。
-    function countSave(){
-      google.script.run.saveToSpreadSheet(count);
-      //google.script.runとは、外部ファイルに記載してある関数を実行するということ。
-    }
+      methods:{
 
-    //カウントアップする変数を外部から取得して画面に表示する。
-    function countLoad(){
-      google.script.run.withSuccessHandler( setCounterDisplay ).loadFromSpreadSheet();
-      //google.script.run.withSuccessHandler(～).～ とは、
-      //外部からの取得（main.jsのloadFromSpreadSheet）が終わってから、
-      //カウンター表示部への設定（index.htmlのsetCounterDisplay）を行うということ。
-      //こうしないと、loadFromSpreadSheetを実行してmain.jsの処理を行うのと、
-      //index.htmlの次行の処理を行うのが平行になり、
-      //loadFromSpreadSheetのリターンをまたずに画面表示しようとしてundefinedが表示される。
-    }
+        //カウントアップする変数に
+        //１を足して画面に表示する。
+        countUp:function(){
+          this.setCounterDisplay(this.count+1);
+        },
 
-    //引数で渡された値（カウントアップする変数）を、
-    //画面のカウンター表示部に表示する。
-    function setCounterDisplay(paramCount){
-      document.getElementById("countText").value = paramCount;
-      count = paramCount;
-    }
+        //カウントアップする変数を
+        //０にして画面に表示する。
+        countReset:function(){
+          this.setCounterDisplay(0);
+        },
+
+        //カウントアップする変数を外部に保存する。
+        countSave:function(){
+          google.script.run.saveToSpreadSheet(this.count);
+        },
+
+        //引数で渡された値（カウントアップする変数）を、
+        //画面のカウンター表示部に表示する。
+        setCounterDisplay:function(paramCount){
+          this.count = paramCount;
+        }
+
+      }
+    })
 
   </script>
 
