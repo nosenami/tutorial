@@ -103,7 +103,7 @@
 
       //初回（<body onload… のイメージ）
       //カウントアップする変数を外部から取得して画面に表示する。
-      created:function(){
+      created(){
         google.script.run.withSuccessHandler( this.setCounterDisplay ).loadFromSpreadSheet();
         //google.script.run.withSuccessHandler(～).～ とは、
         //外部からの取得（main.jsのloadFromSpreadSheet）が終わってから、
@@ -117,24 +117,24 @@
 
         //カウントアップする変数に
         //１を足して画面に表示する。
-        countUp:function(){
+        countUp(){
           this.setCounterDisplay(this.count+1);
         },
 
         //カウントアップする変数を
         //０にして画面に表示する。
-        countReset:function(){
+        countReset(){
           this.setCounterDisplay(0);
         },
 
         //カウントアップする変数を外部に保存する。
-        countSave:function(){
+        countSave(){
           google.script.run.saveToSpreadSheet(this.count);
         },
 
         //引数で渡された値（カウントアップする変数）を、
         //画面のカウンター表示部に表示する。
-        setCounterDisplay:function(paramCount){
+        setCounterDisplay(paramCount){
           this.count = paramCount;
         }
 
