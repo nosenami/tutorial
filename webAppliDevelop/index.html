@@ -3,98 +3,94 @@
 <head>
   <base target="_top">
   <title>ｗｅｂアプリ開発</title>
-  <style>
-
-    /* 全体の背景 */
-    body{
-      background-color: #ffe7ff;
-    }
-
-    /* カウント数字のテキストボックス */
-    #countText{
-      background-color: #ffffff;
-      color: #0000ae;
-      font-size: 40px;
-      font-weight: bold;
-      text-align: right;
-      width: 300px;
-      height: 60px;
-      padding: 5px;
-    }
-
-    /* ボタン（共通） */
-    .buttonStyle{
-      background-color: #caf6d6;
-      border-color: #ffffff;
-      border-style: outset;
-      border-width: 2px;
-      margin: 40px 0px;
-    }
-    .buttonStyle:active{
-      background-color: #bde8c9;
-      border-style: inset;
-    }
-
-    /* 大ボタン */
-    .bigButtonStyle{
-      font-size: 20px;
-      padding: 20px 20px 20px 20px;
-    }
-    .bigButtonStyle:active{
-      padding: 22px 18px 18px 22px;
-    }
-
-    /* 小ボタン */
-    .smallButtonStyle{
-      font-size: 10px;
-      padding: 6px 15px 6px 15px;
-    }
-    .smallButtonStyle:active{
-      padding: 7px 14px 5px 16px;
-    }
-
-  </style>
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
 </head>
 <body>
-  課題：webアプリ開発<br>
-  ・1-1. カウントアップできるようにする<br>
-  ・1-2. リセットできるようにする<br>
-  ・1-3. 見た目をいい感じにしてみる<br>
-  ・2-1. カウント結果を保存できるようにする<br>
-  ・2-2. 前回保存時のカウンターを表示できるようにする<br>
-  ・3-1. Vue.jsを導入して作り替える<br>
-  <br>
 
   <div id="app">
+    <v-app>
+      <v-main  class="pink lighten-5">
 
-    <table >
-      <tr>
-        <td colspan="2">
-          <input type="text" v-bind:value="count" disabled id="countText">
-        </td>
-      </tr>
-      <tr>
-        <td align="center" colspan="2">
-          <input type="button" value="カウントアップ" v-on:click="countUp" class="buttonStyle bigButtonStyle">
-        </td>
-      </tr>
-      <tr>
-        <td align="left">
-          <input type="button" value="リセット" v-on:click="countReset" class="buttonStyle smallButtonStyle">
-        </td>
-        <td align="right">
-          <input type="button" value="　保存　" v-on:click="countSave" class="buttonStyle smallButtonStyle">
-       </td>
-      </tr>
-    </table>
+        課題：webアプリ開発<br>
+        ・1-1. カウントアップできるようにする<br>
+        ・1-2. リセットできるようにする<br>
+        ・1-3. 見た目をいい感じにしてみる<br>
+        ・2-1. カウント結果を保存できるようにする<br>
+        ・2-2. 前回保存時のカウンターを表示できるようにする<br>
+        ・3-1. Vue.jsを導入して作り替える<br>
+        ・3-2. Vuetifyを導入して見た目をいい感じにしてみる<br>
+        <br>
 
+        <v-container>
+
+          <!-- 一段目　カウンター表示部 -->
+          <v-row>
+
+            <v-spacer></v-spacer>
+
+            <v-col cols="auto">
+              <v-sheet
+                class="indigo--text text--darken-4 text-h3 text-right pa-3" elevation="1"
+                height="70" width="300"
+                v-text="count"></v-sheet>
+            </v-col>
+
+            <v-spacer></v-spacer>
+
+          </v-row>
+          <br><br>
+
+          <!-- 二段目　メインボタン部 -->
+          <v-row>
+
+            <v-spacer></v-spacer>
+
+            <v-col cols="auto" >
+              <v-btn class="green accent-1" x-large rounded elevation="8" v-on:click="countUp">カウントアップ</v-btn>
+            </v-col>
+
+            <v-spacer></v-spacer>
+
+          </v-row>
+          <br><br>
+
+          <!-- 三段目　サブボタン部 -->
+          <v-row>
+
+            <v-spacer></v-spacer>
+
+            <v-col cols="auto" >
+              <v-btn class="green accent-1" small elevation="2" v-on:click="countReset">リセット</v-btn>
+            </v-col>
+
+            <v-spacer></v-spacer>
+
+            <v-col  cols="auto"  >
+              <v-btn class="green accent-1" small elevation="2" v-on:click="countSave">　保存　</v-btn>
+            </v-col>
+
+            <v-spacer></v-spacer>
+
+          </v-row>
+          <br><br>
+
+        </v-container>
+
+      </v-main>
+    </v-app>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
   <script>
     var app = new Vue({
 
       el:'#app',
+
+      vuetify: new Vuetify(),
 
       data:{
         //カウントアップする変数。
