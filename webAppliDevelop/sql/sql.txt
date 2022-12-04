@@ -1,0 +1,13 @@
+--
+--	Webアプリ開発 4-2. テーブルを作成する
+--
+--	当ファイルはプログラムソースではなく、
+--	A5ツールにて実行するためのＳＱＬ分を記載したものです。
+--
+
+
+CREATE TABLE counterTable (
+	key   int(3) NOT NULL,
+	count int(5) NOT NULL,
+	PRIMARY KEY (key)
+)
