@@ -6,7 +6,7 @@
 --
 
 
-CREATE TABLE counterTable (
+CREATE TABLE counter_table (
 	key   int(3) NOT NULL,
 	count int(5) NOT NULL,
 	PRIMARY KEY (key)
