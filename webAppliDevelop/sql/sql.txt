@@ -7,7 +7,7 @@
 
 
 CREATE TABLE counter_table (
-	key   int(3) NOT NULL,
+	counter_id int(3) NOT NULL,
 	count int(5) NOT NULL,
-	PRIMARY KEY (key)
+	PRIMARY KEY (counter_id)
 )
