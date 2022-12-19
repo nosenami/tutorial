@@ -52,13 +52,14 @@ const USER_NAME = 'esm';
 const PASSWORD = 'esm';
 
 /** ＳＱＬ文（counter_tableのcountをＵＰＤＡＴＥする。） */
-const SQL_STATEMENT_UPDATE =
-  "UPDATE  " +
-  "  web_book_nosenami.counter_table " +
-  "SET  " +
-  "  count = ?  " +
-  "WHERE  " +
-  "  counter_id = 1  ";
+const SQL_STATEMENT_UPDATE = `
+  UPDATE
+    web_book_nosenami.counter_table
+  SET
+    count = ?
+  WHERE
+    counter_id = 1
+  `;
 
 
 /**
