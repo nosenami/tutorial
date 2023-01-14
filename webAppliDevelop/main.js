@@ -91,15 +91,17 @@ function selectFromDatabase() {
   const jdbcStatement = jdbcConnection.createStatement();
   const jdbcResultSet = jdbcStatement.executeQuery(SQL_STATEMENT_SELECT);
 
-  //ＳＥＬＥＣＴ実行の手順④
+  //ＳＥＬＥＣＴ実行の手順③
   //ＳＱＬ結果が入っているjdbcResultSetというオブジェクトから
   //必要な値を取り出す。
+  //  nextとは、ＳＱＬ結果を１件読み込む。
+  //  読めればtrueを返し、読めなければ（ATEND）falseを返す。
   let count = 0;
   while( jdbcResultSet.next() ) {
     count = jdbcResultSet.getInt('count')
   }
 
-  //ＳＥＬＥＣＴ実行の手順⑤
+  //ＳＥＬＥＣＴ実行の手順④
   //接続を終了する。
   jdbcResultSet.close();
   jdbcStatement.close();
