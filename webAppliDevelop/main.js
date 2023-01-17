@@ -52,32 +52,21 @@ const USER_NAME = 'esm';
 const PASSWORD = 'esm';
 
 
-/** ＳＱＬ文（counter_tableのcountをＳＥＬＥＣＴする。） */
-const SQL_STATEMENT_SELECT = `
-  SELECT
-    count
-  FROM
-    web_book_nosenami.counter_table
-  WHERE
-    counter_id = 1
-  `;
-
-/** ＳＱＬ文（counter_tableのcountをＵＰＤＡＴＥする。） */
-const SQL_STATEMENT_UPDATE = `
-  UPDATE
-    web_book_nosenami.counter_table
-  SET
-    count = ?
-  WHERE
-    counter_id = 1
-  `;
-
-
 /**
  * ＤＢからの取得を行う。
  * @returns 取得したカウンタ値。
  */
 function selectFromDatabase() {
+
+  /** ＳＱＬ文（counter_tableのcountをＳＥＬＥＣＴする。） */
+  const SQL_STATEMENT_SELECT = `
+    SELECT
+      count
+    FROM
+      web_book_nosenami.counter_table
+    WHERE
+      counter_id = 1
+    `;
 
   //ＳＥＬＥＣＴ実行の手順①
   //ＤＢへ接続し、JdbcConnectionというオブジェクトを受け取る。
@@ -117,6 +106,16 @@ function selectFromDatabase() {
  * @returns 更新結果の行数である１。
  */
 function updateToDatabase(count) {
+
+  /** ＳＱＬ文（counter_tableのcountをＵＰＤＡＴＥする。） */
+  const SQL_STATEMENT_UPDATE = `
+    UPDATE
+      web_book_nosenami.counter_table
+    SET
+      count = ?
+    WHERE
+      counter_id = 1
+    `;
 
   //ＵＰＤＡＴＥ実行の手順①
   //ＤＢへ接続し、JdbcConnectionというオブジェクトを受け取る。
