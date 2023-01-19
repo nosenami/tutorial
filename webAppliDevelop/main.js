@@ -35,7 +35,7 @@ function saveToSpreadSheet(count) {
  * 今後ボタンによる動作を実装したら当関数は削除する。
  */
 function testMain(){
-  console.log( updateToDatabase(12345) );
+  console.log( selectFromDatabase() );
 }
 
 
@@ -51,15 +51,53 @@ const USER_NAME = 'esm';
 /**パスワード  */
 const PASSWORD = 'esm';
 
-/** ＳＱＬ文（counter_tableのcountをＵＰＤＡＴＥする。） */
-const SQL_STATEMENT_UPDATE = `
-  UPDATE
-    web_book_nosenami.counter_table
-  SET
-    count = ?
-  WHERE
-    counter_id = 1
-  `;
+
+/**
+ * ＤＢからの取得を行う。
+ * @returns 取得したカウンタ値。
+ */
+function selectFromDatabase() {
+
+  /** ＳＱＬ文（counter_tableのcountをＳＥＬＥＣＴする。） */
+  const SQL_STATEMENT_SELECT = `
+    SELECT
+      count
+    FROM
+      web_book_nosenami.counter_table
+    WHERE
+      counter_id = 1
+    `;
+
+  //ＳＥＬＥＣＴ実行の手順①
+  //ＤＢへ接続し、JdbcConnectionというオブジェクトを受け取る。
+  //  JDBCとは、接続に関するサービス。
+  const jdbcConnection = Jdbc.getCloudSqlConnection(DATABASE_URL, USER_NAME, PASSWORD);
+
+  //ＳＥＬＥＣＴ実行の手順②
+  //JdbcConnectionというオブジェクトをもとに
+  //jdbcStatementというオブジェクトを作成する。
+  //それをもとにＳＱＬを実行し、ＳＱＬ結果をjdbcResultSetというオブジェクトに受け取る。
+  const jdbcStatement = jdbcConnection.createStatement();
+  const jdbcResultSet = jdbcStatement.executeQuery(SQL_STATEMENT_SELECT);
+
+  //ＳＥＬＥＣＴ実行の手順③
+  //ＳＱＬ結果が入っているjdbcResultSetというオブジェクトから
+  //必要な値を取り出す。
+  //  nextとは、ＳＱＬ結果を１件読み込む。
+  //  読めればtrueを返し、読めなければ（ATEND）falseを返す。
+  let count = 0;
+  while( jdbcResultSet.next() ) {
+    count = jdbcResultSet.getInt('count')
+  }
+
+  //ＳＥＬＥＣＴ実行の手順④
+  //接続を終了する。
+  jdbcResultSet.close();
+  jdbcStatement.close();
+  jdbcConnection.close();
+
+  return count;
+}
 
 
 /**
@@ -68,6 +106,16 @@ const SQL_STATEMENT_UPDATE = `
  * @returns 更新結果の行数である１。
  */
 function updateToDatabase(count) {
+
+  /** ＳＱＬ文（counter_tableのcountをＵＰＤＡＴＥする。） */
+  const SQL_STATEMENT_UPDATE = `
+    UPDATE
+      web_book_nosenami.counter_table
+    SET
+      count = ?
+    WHERE
+      counter_id = 1
+    `;
 
   //ＵＰＤＡＴＥ実行の手順①
   //ＤＢへ接続し、JdbcConnectionというオブジェクトを受け取る。
