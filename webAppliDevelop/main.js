@@ -7,38 +7,6 @@ function doGet() {
 }
 
 
-/**
- * カウントアップした値を保存するスプレッドシートの定義
- */
-// https://docs.google.com/spreadsheets/d/1ws3hGT_qzSuvuOQ1QJ1xlbZgMPk1MaU_EdpCsIQNREo/edit#gid=0
-// https://docs.google.com/spreadsheets/d/この部分がシートID/edit#gid=0
-const SHEET_ID = '1ws3hGT_qzSuvuOQ1QJ1xlbZgMPk1MaU_EdpCsIQNREo';
-const SHEET_NAME = 'カウンタ値シート';
-const CELL = 'A1';
-
-
-/**
- * スプレッドシートに引数の値を保存する。
- * @param {*} count スプレッドシートのA1セルに保存する値。（カウンターの値。）
- */
-function saveToSpreadSheet(count) {
-
-  const spreadsheet = SpreadsheetApp.openById(SHEET_ID);
-  const sheet = spreadsheet.getSheetByName(SHEET_NAME);
-  const range = sheet.getRange(CELL);
-  range.setValue(count);
-}
-
-
-/**
- * テスト用の呼び出し関数。
- * 今後ボタンによる動作を実装したら当関数は削除する。
- */
-function testMain(){
-  console.log( selectFromDatabase() );
-}
-
-
 /** 接続名（インスタンス名） */
 const CONNECTION_NAME = 'esm-gcp-study:us-central1:modern-study';
 /** データベース名 */
@@ -140,17 +108,4 @@ function updateToDatabase(count) {
   jdbcConnection.close();
 
   return resultRows;
-}
-
-
-/**
- * スプレッドシートの値を取得し返却する。
- * @returns スプレッドシートのA1セルの値。（カウンターの値。）
- */
-function loadFromSpreadSheet() {
-
-  const spreadsheet = SpreadsheetApp.openById(SHEET_ID);
-  const sheet = spreadsheet.getSheetByName(SHEET_NAME);
-  const range = sheet.getRange(CELL);
-  return range.getValue();
 }
