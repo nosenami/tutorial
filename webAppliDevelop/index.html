@@ -22,6 +22,7 @@
         ・2-2. 前回保存時のカウンターを表示できるようにする<br>
         ・3-1. Vue.jsを導入して作り替える<br>
         ・3-2. Vuetifyを導入して見た目をいい感じにしてみる<br>
+        ・4-5. 脱スプレッドシート をして、DB とデータをやりとりできるようにする<br>
         <br>
 
         <v-container>
@@ -100,13 +101,13 @@
       //初回（<body onload… のイメージ）
       //カウントアップする変数を外部から取得して画面に表示する。
       created(){
-        google.script.run.withSuccessHandler( this.setCounterDisplay ).loadFromSpreadSheet();
+        google.script.run.withSuccessHandler( this.setCounterDisplay ).selectFromDatabase();
         //google.script.run.withSuccessHandler(～).～ とは、
-        //外部からの取得（main.jsのloadFromSpreadSheet）が終わってから、
+        //外部からの取得（main.jsのselectFromDatabase）が終わってから、
         //カウンター表示部への設定（index.htmlのsetCounterDisplay）を行うということ。
-        //こうしないと、loadFromSpreadSheetを実行してmain.jsの処理を行うのと、
+        //こうしないと、selectFromDatabaseを実行してmain.jsの処理を行うのと、
         //index.htmlの次行の処理を行うのが平行になり、
-        //loadFromSpreadSheetのリターンをまたずに画面表示しようとしてundefinedが表示される。
+        //selectFromDatabaseのリターンをまたずに画面表示しようとしてundefinedが表示される。
       },
 
       methods:{
@@ -125,7 +126,7 @@
 
         //カウントアップする変数を外部に保存する。
         countSave(){
-          google.script.run.saveToSpreadSheet(this.count);
+          google.script.run.updateToDatabase(this.count);
         },
 
         //引数で渡された値（カウントアップする変数）を、
