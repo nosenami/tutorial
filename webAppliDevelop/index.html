@@ -23,6 +23,7 @@
         ・3-1. Vue.jsを導入して作り替える<br>
         ・3-2. Vuetifyを導入して見た目をいい感じにしてみる<br>
         ・4-5. 脱スプレッドシート をして、DB とデータをやりとりできるようにする<br>
+        ・4-6. 非同期処理を同期処理に変え、ローディング機能を取り入れる<br>
         <br>
 
         <v-container>
@@ -80,6 +81,17 @@
 
         </v-container>
 
+        <!-- ロード中を示すオーバレイの表示 -->
+        <v-overlay v-model="showOverlay">
+          <v-progress-circular
+            class="grey--text text--lighten-2"
+            indeterminate
+            size="100"
+            width="10"
+          >
+          </v-progress-circular>
+        </v-overlay>
+
       </v-main>
     </v-app>
   </div>
@@ -95,19 +107,38 @@
 
       data:{
         //カウントアップする変数。
-        count:""
+        count:"",
+        //ロード中を示すオーバレイの表示状態。
+        showOverlay: false
       },
 
       //初回（<body onload… のイメージ）
       //カウントアップする変数を外部から取得して画面に表示する。
-      created(){
-        google.script.run.withSuccessHandler( this.setCounterDisplay ).selectFromDatabase();
-        //google.script.run.withSuccessHandler(～).～ とは、
-        //外部からの取得（main.jsのselectFromDatabase）が終わってから、
-        //カウンター表示部への設定（index.htmlのsetCounterDisplay）を行うということ。
-        //こうしないと、selectFromDatabaseを実行してmain.jsの処理を行うのと、
-        //index.htmlの次行の処理を行うのが平行になり、
-        //selectFromDatabaseのリターンをまたずに画面表示しようとしてundefinedが表示される。
+      async created(){
+
+        //ロード中を示すオーバレイを表示する。
+        this.showOverlay = true;
+
+        await new Promise(
+          (resolve,reject)=>{
+            google.script.run.withSuccessHandler(
+              (value)=>{
+                this.setCounterDisplay(value);
+                resolve();
+              }
+            ).selectFromDatabase();
+          }
+        )
+
+        //await new Promise、resolve とは、同期処理を行うためのしくみ。
+        //ＧＡＳの関数の呼び出し（google.script.run.）は非同期処理のため、
+        //関数の戻りを待たずに次のステップに処理がうつる。
+        //関数の戻りを待ちたいときは、awaitを使用し、かつ、
+        //関数から戻ってから（withSuccessHandler）、Promiseをresolveまたはrejectにする。
+
+        //ロード中を示すオーバレイを非表示にする。
+        this.showOverlay = false;
+
       },
 
       methods:{
@@ -122,11 +153,27 @@
         //０にして画面に表示する。
         countReset(){
           this.setCounterDisplay(0);
+          alert("リセットしました。");
         },
 
         //カウントアップする変数を外部に保存する。
-        countSave(){
-          google.script.run.updateToDatabase(this.count);
+        async countSave(){
+
+          //ロード中を示すオーバレイを表示する。
+          this.showOverlay = true;
+
+          await new Promise(
+            (resolve,reject)=>{
+              google.script.run.withSuccessHandler(
+                ()=>{ resolve();}
+              ).updateToDatabase(this.count);
+            }
+          );
+
+          //ロード中を示すオーバレイを非表示にする。
+          this.showOverlay = false;
+
+          alert("保存しました。");
         },
 
         //引数で渡された値（カウントアップする変数）を、
