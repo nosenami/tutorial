@@ -6,20 +6,6 @@ function doGet() {
     return HtmlService.createTemplateFromFile('index').evaluate();
 }
 
-
-/** 接続名（インスタンス名） */
-const CONNECTION_NAME = 'esm-gcp-study:us-central1:modern-study';
-/** データベース名 */
-const DATABASE_NAME = 'web_book_nosenami';
-/** データベースのＵＲＬ */
-const DATABASE_URL = 'jdbc:google:mysql://' + CONNECTION_NAME + '/' + DATABASE_NAME;
-
-/**ユーザーＩＤ */
-const USER_NAME = 'esm';
-/**パスワード  */
-const PASSWORD = 'esm';
-
-
 /**
  * ＤＢからの取得を行う。
  * @returns 取得したカウンタ値。
