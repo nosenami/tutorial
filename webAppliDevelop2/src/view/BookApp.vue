@@ -7,29 +7,33 @@
 <!-- 一覧 START （将来的にはList.vueに記載） - - - - - - - - - - - -->
     <v-data-table :headers="bookHeaders" :items="bookRecords" sort-by="title" class="elevation-1" >
       <template v-slot:top>
-        <v-toolbar  flat>
+        <v-toolbar flat>
 
 <!-- 検索 START （将来的にはSearch.vueに記載） - - - - - - - - - -->
-          <v-text-field label="検索条件"> </v-text-field>
+          <v-text-field label="検索条件"></v-text-field>
 
           <v-radio-group v-model="searchType" row>
-            <v-radio value="searchType_title" label="タイトル 部分一致" ></v-radio>
-            <v-radio value="searchType_kind" label="ジャンル 完全一致" ></v-radio>
+            <v-radio value="searchType_title" label="タイトル 部分一致"></v-radio>
+            <v-radio value="searchType_kind" label="ジャンル 完全一致"></v-radio>
           </v-radio-group>
 
-          <v-btn  v-on:click="searchBookButton">検索する</v-btn>
+          <v-btn v-on:click="searchBookButton">検索する</v-btn>
 <!-- 検索 END  - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
           <v-spacer></v-spacer>
 
-          <v-btn v-on:click="registBookButton"> 登録する </v-btn>
+          <v-btn v-on:click="registBookButton">登録する</v-btn>
 
         </v-toolbar>
       </template>
 
       <template v-slot:item.editDelete="{ rows }">
-        <v-icon small v-on:click="editBookButton(rows)" class="mr-2"  >  mdi-pencil  </v-icon>
-        <v-icon small v-on:click="deleteBookButton(rows)">  mdi-delete </v-icon>
+        <v-btn fab small class="grey--text text--darken-1 elevation-1" v-on:click="editBookButton(rows)">
+          <v-icon>mdi-pencil</v-icon>
+        </v-btn >
+        <v-btn fab small class="grey--text text--darken-1 elevation-1" v-on:click="deleteBookButton(rows)">
+          <v-icon>mdi-delete</v-icon>
+        </v-btn>
       </template>
 
     </v-data-table>
