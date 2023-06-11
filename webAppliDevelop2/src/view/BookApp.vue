@@ -28,10 +28,10 @@
       </template>
 
       <template v-slot:item.editDelete="{ rows }">
-        <v-btn fab small class="grey--text text--darken-1 elevation-1" v-on:click="editBookButton(rows)">
+        <v-btn icon fab small class="elevation-1" v-on:click="editBookButton(rows)">
           <v-icon>mdi-pencil</v-icon>
         </v-btn >
-        <v-btn fab small class="grey--text text--darken-1 elevation-1" v-on:click="deleteBookButton(rows)">
+        <v-btn icon fab small class="elevation-1" v-on:click="deleteBookButton(rows)">
           <v-icon>mdi-delete</v-icon>
         </v-btn>
       </template>
