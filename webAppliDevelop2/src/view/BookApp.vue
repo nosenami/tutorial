@@ -2,82 +2,84 @@
   <div>
     書籍管理アプリだよ
     <br>
+    <br>
 
-    <table width="70%" >
-      <tr>
-    <!-- 検索 START （将来的にはSearch.vueに記載） - - - - - - - - - -->
-        <td>
-          <v-text-field> </v-text-field>
-        </td>
-        <td>
-          <input type="radio" name="searchType" checked> タイトル 部分一致 &nbsp;&nbsp;
-          <input type="radio" name="searchType" > ジャンル 完全一致 &nbsp;&nbsp;
-          <v-btn  v-on:click="searchBookButton">検索</v-btn>
-        </td>
-    <!-- 検索 END  - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<!-- 一覧 START （将来的にはList.vueに記載） - - - - - - - - - - - -->
+    <v-data-table :headers="bookHeaders" :items="bookRecords" sort-by="title" class="elevation-1" >
+      <template v-slot:top>
+        <v-toolbar flat>
 
-        <td>
+<!-- 検索 START （将来的にはSearch.vueに記載） - - - - - - - - - -->
+          <v-text-field label="検索条件"></v-text-field>
+
+          <v-radio-group v-model="searchType" row>
+            <v-radio value="searchType_title" label="タイトル 部分一致"></v-radio>
+            <v-radio value="searchType_kind" label="ジャンル 完全一致"></v-radio>
+          </v-radio-group>
+
+          <v-btn v-on:click="searchBookButton">検索する</v-btn>
+<!-- 検索 END  - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+          <v-spacer></v-spacer>
+
           <v-btn v-on:click="registBookButton">登録する</v-btn>
-        </td>
-      </tr>
-    </table>
 
-    <!-- 一覧 START （将来的にはList.vueに記載） - - - - - - - - - - - -->
-    <table border="1" width="100%">
-      <tr>
-        <th>タイトル</th>
-        <th>ジャンル</th>
-        <th>購入日</th>
-        <th>購入者</th>
-        <th>編集</th>
-        <th>削除</th>
-      </tr>
-      <tr>
-        <td>宇宙消失</td>
-        <td>ＳＦ</td>
-        <td>2022/4/1</td>
-        <td>氏名Ａ</td>
-        <td> <v-btn  v-on:click="editBookButton">編集</v-btn> </td>
-        <td> <v-btn  v-on:click="deleteBookButton">削除</v-btn></td>
-      </tr>
-      <tr>
-        <td>空飛ぶ馬</td>
-        <td>ミステリ</td>
-        <td>2022/5/23</td>
-        <td>氏名Ｂ</td>
-        <td> <v-btn  v-on:click="editBookButton">編集</v-btn> </td>
-        <td> <v-btn  v-on:click="deleteBookButton">削除</v-btn></td>
-      </tr>
-      <tr>
-        <td>罪と罰</td>
-        <td>小説</td>
-        <td>2022/6/5</td>
-        <td>氏名Ａ</td>
-        <td> <v-btn  v-on:click="editBookButton">編集</v-btn> </td>
-        <td> <v-btn  v-on:click="deleteBookButton">削除</v-btn></td>
-      </tr>
-      <tr>
-        <td>あああ</td>
-        <td>いい</td>
-        <td>yyyy/mm/dd</td>
-        <td>ＸＹＺ</td>
-        <td> <v-btn  v-on:click="editBookButton">編集</v-btn> </td>
-        <td> <v-btn  v-on:click="deleteBookButton">削除</v-btn></td>
-      </tr>
-    </table>
-    <!-- 一覧 END  - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        </v-toolbar>
+      </template>
+
+      <template v-slot:item.editDelete="{ rows }">
+        <v-btn icon fab small class="elevation-1" v-on:click="editBookButton(rows)">
+          <v-icon>mdi-pencil</v-icon>
+        </v-btn >
+        <v-btn icon fab small class="elevation-1" v-on:click="deleteBookButton(rows)">
+          <v-icon>mdi-delete</v-icon>
+        </v-btn>
+      </template>
+
+    </v-data-table>
+<!-- 一覧 END  - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
   </div>
 </template>
 
 <script>
 export default {
-  data () {
-    return {}
+
+  data: () => ({
+    bookHeaders: [
+      { text: 'タイトル', value: 'title' },
+      { text: 'ジャンル', value: 'kind' },
+      { text: '購入日', value: 'buyDate' },
+      { text: '購入者', value: 'buyPerson' },
+      { text: '', value: 'editDelete', sortable: false }
+    ],
+    bookRecords: [],
+    searchType: 'searchType_title'
+  }),
+
+  created () {
+    this.initialize()
   },
-  created () {},
-  computed: {},
+
+  computed: {
+  },
+
+  watch: {
+  },
+
   methods: {
+
+    /**
+     * テーブルの明細を固定値で設定。将来、ＤＢから取得するように変更予定。
+     */
+    initialize () {
+      this.bookRecords = [
+        { title: '宇宙消失', kind: 'ＳＦ', buyDate: '2022/4/1', buyPerson: '氏名Ａ' },
+        { title: '空飛ぶ馬', kind: 'ミステリ', buyDate: '2022/5/23', buyPerson: '氏名Ｂ' },
+        { title: '罪と罰', kind: '小説', buyDate: '2022/6/5', buyPerson: '氏名Ａ' },
+        { title: 'あああ', kind: 'いい', buyDate: 'yyyy/mm/dd', buyPerson: 'ＸＹＺ' }
+      ]
+    },
 
     searchBookButton () {
       alert('検索ボタン押下時の動作予定。')
@@ -87,11 +89,11 @@ export default {
       alert('登録ボタン押下時の動作予定。')
     },
 
-    editBookButton () {
+    editBookButton (rows) {
       alert('編集ボタン押下時の動作予定。')
     },
 
-    deleteBookButton () {
+    deleteBookButton (rows) {
       alert('削除ボタン押下時の動作予定。')
     }
 
