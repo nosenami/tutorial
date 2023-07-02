@@ -131,10 +131,15 @@ export default {
     registDialog: false,
     deleteDialog: false,
 
-    editedIndex: -1,
+    /**
+     * 変更かどうかを示す。
+     * true  変更ボタン押下時である。
+     * false 登録ボタン押下時である。
+     */
+    isChange: false,
 
-    inputBookInfo: { title: '', kind: '', buyDate: '', buyPerson: '' },
-    initBookInfo: { title: '', kind: '', buyDate: '', buyPerson: '' }
+    inputBookInfo: {},
+    initBookInfo: {}
 
   }),
 
@@ -144,10 +149,10 @@ export default {
 
   computed: {
     registUpdateTitle () {
-      if (this.editedIndex === -1) {
-        return '登録'
-      } else {
+      if (this.isChange) {
         return '変更'
+      } else {
+        return '登録'
       }
     }
   },
@@ -180,8 +185,7 @@ export default {
      * 登録ボタン押下時の動作。
      */
     registBookButton () {
-      //  該当明細の選択ではないため行数は-1行目とする。
-      this.editedIndex = -1
+      this.isChange = false
       //  空の内容を入力用配列にコピーする。
       this.inputBookInfo = Object.assign({}, this.initBookInfo)
       this.registDialog = true
@@ -191,8 +195,7 @@ export default {
      * 変更アイコン押下時の動作。
      */
     editBookButton (item) {
-      //  該当明細の行を取得する。
-      this.editedIndex = this.bookRecords.indexOf(item)
+      this.isChange = true
       //  該当明細の内容を入力用配列にコピーする。
       this.inputBookInfo = Object.assign({}, item)
       this.registDialog = true
@@ -202,8 +205,6 @@ export default {
      * 削除アイコン押下時の動作。
      */
     deleteBookButton (item) {
-      //  該当明細の行を取得する。
-      this.editedIndex = this.bookRecords.indexOf(item)
       //  該当明細の内容を入力用配列にコピーする。
       this.inputBookInfo = Object.assign({}, item)
       this.deleteDialog = true
