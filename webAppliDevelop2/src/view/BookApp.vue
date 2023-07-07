@@ -5,7 +5,7 @@
     <br>
 
 <!-- 一覧 START （将来的にはList.vueに記載） - - - - - - - - - - - -->
-    <v-data-table :headers="bookHeaders" :items="bookRecords" sort-by="title" class="elevation-1" >
+    <v-data-table :headers="bookHeaders" :items="bookRecords" class="elevation-1" >
       <template v-slot:top>
         <v-toolbar flat>
 
@@ -25,13 +25,85 @@
           <v-btn v-on:click="registBookButton">登録する</v-btn>
 
         </v-toolbar>
+
+<!-- 入力用子画面 START  - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        <v-dialog v-model="registDialog"  max-width="500px" >
+
+          <v-card>
+            <v-card-title>
+              <span class="text-h5">書籍の情報を{{ registUpdateTitle }}します</span>
+            </v-card-title>
+
+            <v-card-text>
+              <v-container>
+                <v-row>
+                  <v-col cols="12" sm="12" md="12" >
+                    <v-text-field v-model="inputBookInfo.title" label="タイトル"></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="12" md="12" >
+                    <v-text-field v-model="inputBookInfo.kind" label="ジャンル"></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="12" md="12" >
+                    <v-text-field v-model="inputBookInfo.buyDate" label="購入日"></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="12" md="12" >
+                    <v-text-field v-model="inputBookInfo.buyPerson" label="購入者"></v-text-field>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-card-text>
+
+            <v-card-actions>
+              <v-btn v-on:click="close" >戻る</v-btn>
+              <v-spacer></v-spacer>
+              <v-btn v-on:click="insertUpdateBookInfo" >この書籍情報で{{ registUpdateTitle }}する</v-btn>
+            </v-card-actions>
+
+          </v-card>
+        </v-dialog>
+<!-- 入力用子画面 END  - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<!-- 削除用子画面 START  - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        <v-dialog v-model="deleteDialog" max-width="500px">
+          <v-card>
+            <v-card-title class="text-h5">選択した書籍の登録情報を削除しますか？</v-card-title>
+
+            <v-card-text>
+              <v-container>
+                <v-row>
+                  <v-col cols="12" sm="12" md="12" >
+                    <v-text-field v-model="inputBookInfo.title" label="タイトル" readonly></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="12" md="12" >
+                    <v-text-field v-model="inputBookInfo.kind" label="ジャンル" readonly></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="12" md="12" >
+                    <v-text-field v-model="inputBookInfo.buyDate" label="購入日" readonly></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="12" md="12" >
+                    <v-text-field v-model="inputBookInfo.buyPerson" label="購入者" readonly></v-text-field>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-card-text>
+
+            <v-card-actions>
+              <v-btn v-on:click="closeDelete">戻る</v-btn>
+              <v-spacer></v-spacer>
+              <v-btn v-on:click="deleteBookInfo">この書籍情報を削除する</v-btn>
+            </v-card-actions>
+
+          </v-card>
+
+        </v-dialog>
+<!-- 削除用子画面 END  - - - - - - - - - - - - - - - - - - - - - - - - - -->
       </template>
 
-      <template v-slot:item.editDelete="{ rows }">
-        <v-btn icon fab small class="elevation-1" v-on:click="editBookButton(rows)">
+      <template v-slot:item.editDelete="{ item }">
+        <v-btn icon fab small class="elevation-1" v-on:click="editBookButton(item)">
           <v-icon>mdi-pencil</v-icon>
         </v-btn >
-        <v-btn icon fab small class="elevation-1" v-on:click="deleteBookButton(rows)">
+        <v-btn icon fab small class="elevation-1" v-on:click="deleteBookButton(item)">
           <v-icon>mdi-delete</v-icon>
         </v-btn>
       </template>
@@ -54,7 +126,21 @@ export default {
       { text: '', value: 'editDelete', sortable: false }
     ],
     bookRecords: [],
-    searchType: 'searchType_title'
+    searchType: 'searchType_title',
+
+    registDialog: false,
+    deleteDialog: false,
+
+    /**
+     * 変更かどうかを示す。
+     * true  変更ボタン押下時である。
+     * false 登録ボタン押下時である。
+     */
+    isChange: false,
+
+    inputBookInfo: {},
+    initBookInfo: {}
+
   }),
 
   created () {
@@ -62,6 +148,13 @@ export default {
   },
 
   computed: {
+    registUpdateTitle () {
+      if (this.isChange) {
+        return '変更'
+      } else {
+        return '登録'
+      }
+    }
   },
 
   watch: {
@@ -81,20 +174,58 @@ export default {
       ]
     },
 
+    /**
+     * 検索ボタン押下時の動作。
+     */
     searchBookButton () {
       alert('検索ボタン押下時の動作予定。')
     },
 
+    /**
+     * 登録ボタン押下時の動作。
+     */
     registBookButton () {
-      alert('登録ボタン押下時の動作予定。')
+      this.isChange = false
+      //  空の内容を入力用配列にコピーする。
+      this.inputBookInfo = Object.assign({}, this.initBookInfo)
+      this.registDialog = true
     },
 
-    editBookButton (rows) {
-      alert('編集ボタン押下時の動作予定。')
+    /**
+     * 変更アイコン押下時の動作。
+     */
+    editBookButton (item) {
+      this.isChange = true
+      //  該当明細の内容を入力用配列にコピーする。
+      this.inputBookInfo = Object.assign({}, item)
+      this.registDialog = true
     },
 
-    deleteBookButton (rows) {
-      alert('削除ボタン押下時の動作予定。')
+    /**
+     * 削除アイコン押下時の動作。
+     */
+    deleteBookButton (item) {
+      //  該当明細の内容を入力用配列にコピーする。
+      this.inputBookInfo = Object.assign({}, item)
+      this.deleteDialog = true
+    },
+
+    insertUpdateBookInfo () {
+      alert('ＤＢ登録、ＤＢ更新処理を行う。')
+      this.registDialog = false
+    },
+
+    deleteBookInfo () {
+      alert('ＤＢ削除処理を行う。')
+      this.deleteDialog = false
+    },
+
+    close () {
+      this.registDialog = false
+    },
+
+    closeDelete () {
+      this.deleteDialog = false
     }
 
   }
