@@ -8,7 +8,7 @@
 
 
 CREATE TABLE book_info_table (
-	book_id        int(5)       NOT NULL, -- 書籍ＩＤ（連番）
+	book_id        int(5)       NOT NULL AUTO_INCREMENT, -- 書籍ＩＤ（連番）
 	title          varchar(100) NOT NULL, -- タイトル
 	kind           int(3)       NOT NULL, -- ジャンル（ジャンルを示すコード値）
 	buy_date       date         NOT NULL, -- 購入日
