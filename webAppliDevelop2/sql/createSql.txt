@@ -1,0 +1,22 @@
+--
+-- Webアプリ開発2
+-- 3-1.書籍情報テーブルのDDL文を作成する。
+--
+-- 当ファイルはプログラムソースではなく、
+-- A5ツールにて実行するためのＳＱＬ文を記載したものです。
+--
+
+
+CREATE TABLE book_info_table (
+	book_id        int(5)       NOT NULL AUTO_INCREMENT, -- 書籍ＩＤ（連番）
+	title          varchar(100) NOT NULL, -- タイトル
+	kind           int(3)       NOT NULL, -- ジャンル（ジャンルを示すコード値）
+	buy_date       date         NOT NULL, -- 購入日
+	buy_person     char(40)     NOT NULL, -- 購入者
+	review_comment varchar(300) NOT NULL, -- レビュー内容
+	PRIMARY KEY (book_id)
+)
+
+-- タイトルとレビュー内容は、長い文字数も短い文字数もありえるのでvarcharとする。
+-- 購入者は、とびぬけて長い名前は無い想定で、charとする。
+-- （varcharとcharで使い分けて、型の違いを比べてみる。）
