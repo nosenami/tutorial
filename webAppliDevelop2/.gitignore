@@ -1,2 +1,4 @@
 node_modules
 /dist
+# ＤＢ接続情報を記載したファイルはpush対象としない。
+dbInfo.js

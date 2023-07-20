@@ -114,6 +114,7 @@
   </div>
 </template>
 
+<script src='server\Code.js'></script>
 <script>
 export default {
 
@@ -163,15 +164,12 @@ export default {
   methods: {
 
     /**
-     * テーブルの明細を固定値で設定。将来、ＤＢから取得するように変更予定。
+     * ＤＢに登録されている全ての書籍を一覧に表示する。
      */
     initialize () {
-      this.bookRecords = [
-        { title: '宇宙消失', kind: 'ＳＦ', buyDate: '2022/4/1', buyPerson: '氏名Ａ' },
-        { title: '空飛ぶ馬', kind: 'ミステリ', buyDate: '2022/5/23', buyPerson: '氏名Ｂ' },
-        { title: '罪と罰', kind: '小説', buyDate: '2022/6/5', buyPerson: '氏名Ａ' },
-        { title: 'あああ', kind: 'いい', buyDate: 'yyyy/mm/dd', buyPerson: 'ＸＹＺ' }
-      ]
+      google.script.run.withSuccessHandler(
+        (bookRecords) => { this.bookRecords = bookRecords }
+      ).select()
     },
 
     /**
