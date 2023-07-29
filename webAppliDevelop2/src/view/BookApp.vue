@@ -169,7 +169,7 @@ export default {
     initialize () {
       google.script.run.withSuccessHandler(
         (bookRecords) => { this.bookRecords = bookRecords }
-      ).select()
+      ).selectBooksAll()
     },
 
     /**

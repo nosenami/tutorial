@@ -1,9 +1,9 @@
 import doGet from './functions/doGet'
 import sample from './functions/sample'
-import {select} from './functions/select'
-import {getKindName} from '../src/modules/util'
+import {selectBooksAll} from './functions/select'
+import { getKindName } from './functions/functionsUtil'
 
 global.doGet = doGet
 global.sample = sample
-global.select = select
+global.selectBooksAll = selectBooksAll
 global.getKindName = getKindName
