@@ -4,7 +4,7 @@ import { DATABASE_URL, PASSWORD, USER_NAME } from './dbInfo'
  * 書籍情報をＤＢから取得する。（条件なし）
  * @returns ＤＢから取得した書籍情報の一覧。配列形式。
  */
-export function selectBooksAll () {
+export const selectBooksAll = () => {
 
     const SQL_STATEMENT_SELECT = `
       SELECT
