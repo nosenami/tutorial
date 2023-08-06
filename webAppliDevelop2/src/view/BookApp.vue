@@ -4,6 +4,8 @@
     <br>
     <br>
 
+    <v-overlay :value="showOverlay"></v-overlay>
+
 <!-- 一覧 START （将来的にはList.vueに記載） - - - - - - - - - - - -->
     <v-data-table :headers="bookHeaders" :items="bookRecords" class="elevation-1" >
       <template v-slot:top>
@@ -140,12 +142,14 @@ export default {
     isChange: false,
 
     inputBookInfo: {},
-    initBookInfo: {}
+    initBookInfo: {},
 
+    //ロード中を示すオーバレイの表示状態。
+    showOverlay: false
   }),
 
-  created () {
-    this.initialize()
+  async created () {
+    await this.initialize()
   },
 
   computed: {
@@ -166,10 +170,34 @@ export default {
     /**
      * ＤＢに登録されている全ての書籍を一覧に表示する。
      */
-    initialize () {
-      google.script.run.withSuccessHandler(
-        (bookRecords) => { this.bookRecords = bookRecords }
-      ).selectBooksAll()
+    initialize: async function () {
+
+      // ロード中を示すオーバレイを表示する。
+      this.showOverlay = true;
+
+      // ＧＡＳ側の関数呼び出しにより非同期となるため、Promiseを使用する。
+      try{
+        await new Promise(
+
+          (resolve, reject) => {
+
+            google.script.run.withSuccessHandler(
+              // selectBooksAllが正常終了したら、取得した情報を設定してから、resolveする。
+              (bookRecords) => { this.bookRecords = bookRecords; resolve(); }
+            ).withFailureHandler(
+              // selectBooksAllが異常終了したら、空情報を設定してから、rejectする。（例外発生となる。）
+              (error) => { this.bookRecords = this.initBookInfo; reject(error);  }
+            ).selectBooksAll()
+
+          }
+        )
+      }
+      catch(e){
+        alert(`ただいま使用できません。\n${e.message}`)
+      }
+
+      //ロード中を示すオーバレイを非表示にする。
+      this.showOverlay = false;
     },
 
     /**
