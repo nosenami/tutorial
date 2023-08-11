@@ -148,8 +148,8 @@ export default {
     showOverlay: false
   }),
 
-  async created () {
-    await this.initialize()
+  created () {
+    this.displayAllBookList()
   },
 
   computed: {
@@ -170,7 +170,7 @@ export default {
     /**
      * ＤＢに登録されている全ての書籍を一覧に表示する。
      */
-    initialize: async function () {
+    displayAllBookList: async function () {
 
       // ロード中を示すオーバレイを表示する。
       this.showOverlay = true;
@@ -193,11 +193,13 @@ export default {
         )
       }
       catch(e){
-        alert(`ただいま使用できません。\n${e.message}`)
+        this.alertErrorMessage(e)
+      }
+      finally{
+        //ロード中を示すオーバレイを非表示にする。
+        this.showOverlay = false;
       }
 
-      //ロード中を示すオーバレイを非表示にする。
-      this.showOverlay = false;
     },
 
     /**
@@ -252,6 +254,10 @@ export default {
 
     closeDelete () {
       this.deleteDialog = false
+    },
+
+    alertErrorMessage(e) {
+      alert(`ただいま使用できません。\n${e.message}`)
     }
 
   }
