@@ -238,9 +238,46 @@ export default {
       this.deleteDialog = true
     },
 
-    insertUpdateBookInfo () {
-      alert('ＤＢ登録、ＤＢ更新処理を行う。')
+    /**
+     * 子画面の入力内容をＤＢへ反映する。
+     */
+    insertUpdateBookInfo : async function ()  {
+
+      // 登録用子画面の表示を解除する。
       this.registDialog = false
+      // ロード中を示すオーバレイを表示する。
+      this.showOverlay = true
+
+      try{
+
+        // ＤＢ更新の処理
+        if(this.isChange){
+          // 7-2でUPDATEの機能を実装予定。
+        }
+
+        // ＤＢ登録の処理
+        else{
+
+          await new Promise(
+
+            (resolve, reject) => {
+              google.script.run.withSuccessHandler(
+                () => { alert('登録しました。'); resolve(); }
+              ).withFailureHandler(
+                (error) => { alert('登録に失敗しました。'); reject(error); }
+              ).insertBookInfo()
+            }
+          )
+
+        }
+      }
+      catch(e){
+        this.alertErrorMessage(e)
+      }
+      finally{
+        this.displayAllBookList();
+      }
+
     },
 
     deleteBookInfo () {
