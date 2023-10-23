@@ -2,7 +2,7 @@ import { DATABASE_URL, PASSWORD, USER_NAME } from './dbInfo'
 
 /**
  * 書籍情報をＤＢへ登録する。
- * @param {*} inputBookInfo 登録する内容が設定された書籍情報
+ * @param {Object} inputBookInfo 登録する内容が設定された書籍情報
  * @returns　登録件数。（１件を示す「1」）。
  */
 export const insertBookInfo = (inputBookInfo) => {

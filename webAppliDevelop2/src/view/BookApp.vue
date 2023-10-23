@@ -86,7 +86,12 @@
                 <v-btn v-on:click="close" >戻る</v-btn>
                 <v-spacer></v-spacer>
                 <!-- 登録/変更ボタンは、バリデーションチェックOKの場合のみ押下可能とする -->
-                <v-btn v-on:click="insertUpdateBookInfo" :disabled="!isInputValid">この書籍情報で{{ registUpdateTitle }}する</v-btn>
+                <v-btn
+                  v-on:click="insertUpdateBookInfo"
+                  :disabled="!isInputValid"
+                >
+                  この書籍情報で{{ registUpdateTitle }}する
+                </v-btn>
               </v-card-actions>
 
             </v-card>
@@ -240,14 +245,16 @@ export default {
 
           (resolve, reject) => {
 
-            google.script.run.withSuccessHandler(
-              // selectBooksAllが正常終了したら、取得した情報を設定してから、resolveする。
-              (bookRecords) => { this.bookRecords = bookRecords; resolve(); }
-            ).withFailureHandler(
-              // selectBooksAllが異常終了したら、空情報を設定してから、rejectする。（例外発生となる。）
-              (error) => { this.bookRecords = this.initBookInfo; reject(error);  }
-            ).selectBooksAll()
-
+            google.script.run
+              .withSuccessHandler(
+                // selectBooksAllが正常終了したら、取得した情報を設定してから、resolveする。
+                (bookRecords) => { this.bookRecords = bookRecords; resolve(); }
+              )
+              .withFailureHandler(
+                // selectBooksAllが異常終了したら、空情報を設定してから、rejectする。（例外発生となる。）
+                (error) => { this.bookRecords = this.initBookInfo; reject(error);  }
+              )
+              .selectBooksAll()
           }
         )
       }
@@ -375,11 +382,14 @@ export default {
           await new Promise(
 
             (resolve, reject) => {
-              google.script.run.withSuccessHandler(
-                () => { alert('登録しました。'); resolve(); }
-              ).withFailureHandler(
-                (error) => { alert('登録に失敗しました。'); reject(error); }
-              ).insertBookInfo(this.inputBookInfo)
+              google.script.run
+                .withSuccessHandler(
+                  () => { alert('登録しました。'); resolve(); }
+                )
+                .withFailureHandler(
+                  (error) => { alert('登録に失敗しました。'); reject(error); }
+                )
+                .insertBookInfo(this.inputBookInfo)
             }
           )
 
