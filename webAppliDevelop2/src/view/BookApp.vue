@@ -29,39 +29,75 @@
         </v-toolbar>
 
 <!-- 入力用子画面 START  - - - - - - - - - - - - - - - - - - - - - - - - - -->
-        <v-dialog v-model="registDialog"  max-width="500px" >
+        <v-dialog v-model="registDialog"  max-width="700px" >
 
-          <v-card>
-            <v-card-title>
-              <span class="text-h5">書籍の情報を{{ registUpdateTitle }}します</span>
-            </v-card-title>
+          <v-form ref="bookInputForm" v-model="isInputValid" >
 
-            <v-card-text>
-              <v-container>
-                <v-row>
-                  <v-col cols="12" sm="12" md="12" >
-                    <v-text-field v-model="inputBookInfo.title" label="タイトル"></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="12" md="12" >
-                    <v-text-field v-model="inputBookInfo.kind" label="ジャンル"></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="12" md="12" >
-                    <v-text-field v-model="inputBookInfo.buyDate" label="購入日"></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="12" md="12" >
-                    <v-text-field v-model="inputBookInfo.buyPerson" label="購入者"></v-text-field>
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-card-text>
+            <v-card>
+              <v-card-title>
+                <span class="text-h5">書籍の情報を{{ registUpdateTitle }}します</span>
+              </v-card-title>
 
-            <v-card-actions>
-              <v-btn v-on:click="close" >戻る</v-btn>
-              <v-spacer></v-spacer>
-              <v-btn v-on:click="insertUpdateBookInfo" >この書籍情報で{{ registUpdateTitle }}する</v-btn>
-            </v-card-actions>
+              <v-card-text>
+                <v-container>
+                  <v-row>
+                    <v-col cols="12" sm="12" md="12" >
+                      <v-text-field v-model="inputBookInfo.title" label="タイトル"
+                        :counter="maxlengthTitle"
+                        :rules="[validateRequired,validateTitleLength]"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="12" md="12" >
+                      ジャンル<br>
+                      <v-radio-group v-model="inputBookInfo.kind" row>
+                        <v-radio value="0" label="指定なし"></v-radio>
+                        <v-radio value="1" label="小説"></v-radio>
+                        <v-radio value="2" label="ファンタジー"></v-radio>
+                        <v-radio value="3" label="ミステリ"></v-radio>
+                        <v-radio value="4" label="ＳＦ"></v-radio>
+                      </v-radio-group>
+                    </v-col>
+                    <v-col cols="12" sm="12" md="12" >
+                      購入日<br>
+                      <v-date-picker
+                        v-model="inputBookInfo.buyDate"
+                        no-title="true"
+                        locale="jp-ja"
+                        :day-format="date=> new Date(date).getDate()"
+                      ></v-date-picker>
+                    </v-col>
+                    <v-col cols="12" sm="12" md="12" >
+                      <v-text-field v-model="inputBookInfo.buyPerson" label="購入者"
+                        :counter="maxlengthBuyPerson"
+                        :rules="[validateRequired, validateBuyPersonLength]"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="12" md="12" >
+                      <v-textarea v-model="inputBookInfo.reviewComment" label="レビュー内容"
+                        :counter="maxlengthReviewComment"
+                        :rules="[validateRequired, validateReviewCommentLength]"
+                      ></v-textarea>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card-text>
 
-          </v-card>
+              <v-card-actions>
+                <v-btn v-on:click="close" >戻る</v-btn>
+                <v-spacer></v-spacer>
+                <!-- 登録/変更ボタンは、バリデーションチェックOKの場合のみ押下可能とする -->
+                <v-btn
+                  v-on:click="insertUpdateBookInfo"
+                  :disabled="!isInputValid"
+                >
+                  この書籍情報で{{ registUpdateTitle }}する
+                </v-btn>
+              </v-card-actions>
+
+            </v-card>
+
+          </v-form>
+
         </v-dialog>
 <!-- 入力用子画面 END  - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -142,10 +178,38 @@ export default {
     isChange: false,
 
     inputBookInfo: {},
-    initBookInfo: {},
+
+    /**
+     * 入力用子画面の内容の初期値。
+     * （学習メモ）
+     * 日付のnew Date().toISOString().substring(0, 10) とは、
+     * 「YYYY-MM-DDTHH:mm:ss.sssZ」形式の日付部分頭１０桁を取得するという意味。
+     */
+    initBookInfo: {
+      title : "",
+      kind : "0",
+      buyDate : new Date().toISOString().substring(0, 10),
+      buyPerson : "",
+      reviewComment : ""
+    },
 
     //ロード中を示すオーバレイの表示状態。
-    showOverlay: false
+    showOverlay: false,
+
+    /**
+     * フォーム内の入力項目のバリデーションチェック結果を表す。
+     * true  : チェックOKである。
+     * false : チェックNGである。
+     */
+    isInputValid : false,
+
+    /**
+     * 子画面で入力可能な文字数を表す。
+     */
+    maxlengthTitle : 100,
+    maxlengthBuyPerson : 40,
+    maxlengthReviewComment : 300,
+
   }),
 
   created () {
@@ -181,14 +245,16 @@ export default {
 
           (resolve, reject) => {
 
-            google.script.run.withSuccessHandler(
-              // selectBooksAllが正常終了したら、取得した情報を設定してから、resolveする。
-              (bookRecords) => { this.bookRecords = bookRecords; resolve(); }
-            ).withFailureHandler(
-              // selectBooksAllが異常終了したら、空情報を設定してから、rejectする。（例外発生となる。）
-              (error) => { this.bookRecords = this.initBookInfo; reject(error);  }
-            ).selectBooksAll()
-
+            google.script.run
+              .withSuccessHandler(
+                // selectBooksAllが正常終了したら、取得した情報を設定してから、resolveする。
+                (bookRecords) => { this.bookRecords = bookRecords; resolve(); }
+              )
+              .withFailureHandler(
+                // selectBooksAllが異常終了したら、空情報を設定してから、rejectする。（例外発生となる。）
+                (error) => { this.bookRecords = this.initBookInfo; reject(error);  }
+              )
+              .selectBooksAll()
           }
         )
       }
@@ -214,9 +280,14 @@ export default {
      */
     registBookButton () {
       this.isChange = false
-      //  空の内容を入力用配列にコピーする。
+
+      // 子画面の初期値の内容を入力用配列にコピーする。
       this.inputBookInfo = Object.assign({}, this.initBookInfo)
       this.registDialog = true
+
+      // バリデーションをリセットする。
+      //（入力用子画面を、登録せずに閉じて開くと、前回のバリデーション結果が残っているため）
+      this.resetFormValidate()
     },
 
     /**
@@ -236,6 +307,56 @@ export default {
       //  該当明細の内容を入力用配列にコピーする。
       this.inputBookInfo = Object.assign({}, item)
       this.deleteDialog = true
+    },
+
+    /**
+     * 文字列valueが、入力されていることのチェック。
+     * ・valueに文字が入力されているなら、trueを返す。
+     * ・valueに文字が入力されていない（文字数がゼロ）なら、エラーメッセージの文字列を返す。
+     */
+    validateRequired(value) {
+      return !!value || '入力してください。'
+      // （学習メモ）
+      // if、orを省略した書き方。
+      // https://blog.cloud-acct.com/posts/u-signup-page-4/
+      // http://www.24w.jp/study_contents.php?bid=javascript&iid=javascript&sid=default&cid=008
+    },
+
+    /**
+     * 文字列valueが、「タイトル」の既定文字数以内であることのチェック。
+     * ・valueが既定文字数以内なら、trueを返す。
+     * ・valueが既定文字数を超えていると、エラーメッセージの文字列を返す。
+     */
+    validateTitleLength(value){
+      return this.validateLength(value,this.maxlengthTitle)
+    },
+
+    /**
+     * 文字列valueが、「購入者」の既定文字数以内であることのチェック。
+     */
+    validateBuyPersonLength (value) {
+      return this.validateLength(value,this.maxlengthBuyPerson)
+    },
+
+    /**
+     * 文字列valueが、「レビュー内容」の既定文字数以内であることのチェック。
+     */
+    validateReviewCommentLength(value) {
+      return this.validateLength(value,this.maxlengthReviewComment)
+    },
+
+    /**
+     * 文字列の長さがmaxLength以内であることのチェック。
+     */
+    validateLength(value, maxLength){
+      return value.length <= maxLength || `${maxLength}文字まで入力できます。`
+    },
+
+    /**
+     * 入力用子画面のバリデーションをリセットする。
+     */
+    resetFormValidate () {
+      this.$refs.bookInputForm.resetValidation()
     },
 
     /**
@@ -261,11 +382,14 @@ export default {
           await new Promise(
 
             (resolve, reject) => {
-              google.script.run.withSuccessHandler(
-                () => { alert('登録しました。'); resolve(); }
-              ).withFailureHandler(
-                (error) => { alert('登録に失敗しました。'); reject(error); }
-              ).insertBookInfo()
+              google.script.run
+                .withSuccessHandler(
+                  () => { alert('登録しました。'); resolve(); }
+                )
+                .withFailureHandler(
+                  (error) => { alert('登録に失敗しました。'); reject(error); }
+                )
+                .insertBookInfo(this.inputBookInfo)
             }
           )
 
