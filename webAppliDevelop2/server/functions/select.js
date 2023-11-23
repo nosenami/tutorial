@@ -40,7 +40,8 @@ export const selectBooksAll = () => {
         bookRecords.push({
           bookId : jdbcResultSet.getInt('book_id'),
           title :jdbcResultSet.getString('title'),
-          kind : global.getKindName(jdbcResultSet.getInt('kind') ),
+          kind : jdbcResultSet.getString('kind'),
+          kindName : global.getKindName(jdbcResultSet.getInt('kind') ),
           buyDate : jdbcResultSet.getString('buy_date') ,
           buyPerson : jdbcResultSet.getString('buy_person'),
           reviewComment : jdbcResultSet.getString('review_comment')
