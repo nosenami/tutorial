@@ -396,7 +396,8 @@ export default {
         }
       }
       catch(e){
-        this.alertErrorMessage(e)
+        // 当catch内では何もしない。
+        // 登録処理が失敗した旨は、withFailureHandler内でメッセージを出力済み。
       }
       finally{
         this.displayAllBookList();
@@ -433,7 +434,8 @@ export default {
 
       }
       catch(e){
-        this.alertErrorMessage(e)
+        // 当catch内では何もしない。
+        // 削除処理が失敗した旨は、withFailureHandler内でメッセージを出力済み。
       }
       finally{
         this.displayAllBookList()
