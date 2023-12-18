@@ -18,7 +18,7 @@ export const getKindName = (kindValue) => {
       return 'ＳＦ';
       break;
     default:
-      return '';
+      return '指定なし';
       break;
   }
 };

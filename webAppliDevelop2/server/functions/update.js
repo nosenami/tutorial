@@ -20,20 +20,65 @@ export const insertBookInfo = (inputBookInfo) => {
 
     try{
 
-      // ＩＮＳＥＲＴの前準備～実行
+      // ＩＮＳＥＲＴの前準備
       const jdbcConnection = Jdbc.getCloudSqlConnection(DATABASE_URL, USER_NAME, PASSWORD);
       const jdbcPreparedStatement = jdbcConnection.prepareStatement(SQL_STATEMENT_INSERT);
 
-      // 以下、5-2にて、子画面で入力した値を設定させる予定。
+      // 受け渡された書籍情報をＳＱＬ文に設定する
       jdbcPreparedStatement.setString(1,inputBookInfo.title);
       jdbcPreparedStatement.setInt(2, inputBookInfo.kind);
       jdbcPreparedStatement.setString(3,  inputBookInfo.buyDate);
       jdbcPreparedStatement.setString(4,  inputBookInfo.buyPerson);
       jdbcPreparedStatement.setString(5,  inputBookInfo.reviewComment);
 
+      //ＩＮＳＥＲＴの実行
       const resultRows = jdbcPreparedStatement.executeUpdate();
 
-      //ＩＮＳＥＲＴ実行の後始末
+      //ＩＮＳＥＲＴの後始末
+      jdbcPreparedStatement.close();
+      jdbcConnection.close();
+
+      return resultRows;
+
+    }
+    catch(e){
+      console.log(e)
+      throw new Error(e)
+    }
+    finally{
+      // nop
+    }
+  }
+
+
+/**
+ * 書籍情報をＤＢから削除する。
+ * @param {number} book_id 削除する書籍情報のキー項目であるbook_id。
+ * @returns　削除件数。（１件を示す「1」）。
+ */
+export const deleteBookInfo = (book_id) => {
+
+    const SQL_STATEMENT_DELETE = `
+      DELETE
+      FROM
+        book_info_table
+      WHERE
+        book_id = ?
+      `
+
+    try{
+
+      // ＤＥＬＥＴＥの前準備
+      const jdbcConnection = Jdbc.getCloudSqlConnection(DATABASE_URL, USER_NAME, PASSWORD);
+      const jdbcPreparedStatement = jdbcConnection.prepareStatement(SQL_STATEMENT_DELETE);
+
+      // 受け渡されたbook_idをＳＱＬ文に設定する
+      jdbcPreparedStatement.setInt(1, book_id);
+
+      // ＤＥＬＥＴＥの実行
+      const resultRows = jdbcPreparedStatement.executeUpdate();
+
+      // ＤＥＬＥＴＥの後始末
       jdbcPreparedStatement.close();
       jdbcConnection.close();
 

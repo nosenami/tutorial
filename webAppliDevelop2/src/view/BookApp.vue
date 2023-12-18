@@ -113,7 +113,7 @@
                     <v-text-field v-model="inputBookInfo.title" label="タイトル" readonly></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="12" md="12" >
-                    <v-text-field v-model="inputBookInfo.kind" label="ジャンル" readonly></v-text-field>
+                    <v-text-field v-model="inputBookInfo.kindName" label="ジャンル" readonly></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="12" md="12" >
                     <v-text-field v-model="inputBookInfo.buyDate" label="購入日" readonly></v-text-field>
@@ -128,7 +128,7 @@
             <v-card-actions>
               <v-btn v-on:click="closeDelete">戻る</v-btn>
               <v-spacer></v-spacer>
-              <v-btn v-on:click="deleteBookInfo">この書籍情報を削除する</v-btn>
+              <v-btn v-on:click="deleteBookInfo(inputBookInfo.bookId)">この書籍情報を削除する</v-btn>
             </v-card-actions>
 
           </v-card>
@@ -159,7 +159,7 @@ export default {
   data: () => ({
     bookHeaders: [
       { text: 'タイトル', value: 'title' },
-      { text: 'ジャンル', value: 'kind' },
+      { text: 'ジャンル', value: 'kindName' },
       { text: '購入日', value: 'buyDate' },
       { text: '購入者', value: 'buyPerson' },
       { text: '', value: 'editDelete', sortable: false }
@@ -396,7 +396,8 @@ export default {
         }
       }
       catch(e){
-        this.alertErrorMessage(e)
+        // 当catch内では何もしない。
+        // 登録処理が失敗した旨は、withFailureHandler内でメッセージを出力済み。
       }
       finally{
         this.displayAllBookList();
@@ -404,9 +405,42 @@ export default {
 
     },
 
-    deleteBookInfo () {
-      alert('ＤＢ削除処理を行う。')
+    /**
+     * 子画面の書籍情報をＤＢから削除する。
+     */
+    deleteBookInfo : async function (bookId) {
+
+      // 削除用子画面の表示を解除する。
       this.deleteDialog = false
+      // ロード中を示すオーバレイを表示する。
+      this.showOverlay = true
+
+      try{
+
+        // ＤＢ削除の処理
+        await new Promise(
+
+          (resolve,reject) => {
+            google.script.run
+              .withSuccessHandler(
+                () => { alert('削除しました。'); resolve(); }
+              )
+              .withFailureHandler(
+                (error) => { alert("削除に失敗しました。"); reject(error); }
+              )
+              .deleteBookInfo(bookId)
+          }
+        )
+
+      }
+      catch(e){
+        // 当catch内では何もしない。
+        // 削除処理が失敗した旨は、withFailureHandler内でメッセージを出力済み。
+      }
+      finally{
+        this.displayAllBookList()
+      }
+
     },
 
     close () {
