@@ -186,6 +186,7 @@ export default {
      * 「YYYY-MM-DDTHH:mm:ss.sssZ」形式の日付部分頭１０桁を取得するという意味。
      */
     initBookInfo: {
+      bookId : 0, // キー項目にZEROを設定することで、AUTO_INCREMENTを明示的に採番する。
       title : "",
       kind : "0",
       buyDate : new Date().toISOString().substring(0, 10),
@@ -371,29 +372,21 @@ export default {
 
       try{
 
-        // ＤＢ更新の処理
-        if(this.isChange){
-          // 7-2でUPDATEの機能を実装予定。
-        }
+        // ＤＢ登録・ＤＢ更新の処理
+        await new Promise(
 
-        // ＤＢ登録の処理
-        else{
+          (resolve, reject) => {
+            google.script.run
+              .withSuccessHandler(
+                () => { alert( this.registUpdateTitle + 'しました。'); resolve(); }
+              )
+              .withFailureHandler(
+                (error) => { alert( this.registUpdateTitle + 'に失敗しました。'); reject(error); }
+              )
+              .insertBookInfo(this.inputBookInfo)
+          }
+        )
 
-          await new Promise(
-
-            (resolve, reject) => {
-              google.script.run
-                .withSuccessHandler(
-                  () => { alert('登録しました。'); resolve(); }
-                )
-                .withFailureHandler(
-                  (error) => { alert('登録に失敗しました。'); reject(error); }
-                )
-                .insertBookInfo(this.inputBookInfo)
-            }
-          )
-
-        }
       }
       catch(e){
         // 当catch内では何もしない。

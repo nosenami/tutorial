@@ -1,21 +1,29 @@
 import { DATABASE_URL, PASSWORD, USER_NAME } from './dbInfo'
 
 /**
- * 書籍情報をＤＢへ登録する。
- * @param {Object} inputBookInfo 登録する内容が設定された書籍情報
- * @returns　登録件数。（１件を示す「1」）。
+ * 書籍情報をＤＢへ登録または更新する。
+ * キー項目（book_id）が存在しないなら、レコードを登録する。存在するなら、レコードを更新する。
+ * @param {Object} inputBookInfo 登録または更新する内容が設定された書籍情報
+ * @returns　登録または更新件数。（１件を示す「1」）。
  */
 export const insertBookInfo = (inputBookInfo) => {
 
     const SQL_STATEMENT_INSERT = `
       INSERT INTO book_info_table (
+        book_id,
         title,
         kind,
         buy_date,
         buy_person,
         review_comment
       )
-      VALUES (?, ?, ?, ?, ?)
+      VALUES (?, ?, ?, ?, ?, ?)
+      ON DUPLICATE KEY UPDATE
+        title = VALUES(title),
+        kind = VALUES(kind),
+        buy_date = VALUES(buy_date),
+        buy_person = VALUES(buy_person),
+        review_comment = VALUES(review_comment)
     `
 
     try{
@@ -25,11 +33,12 @@ export const insertBookInfo = (inputBookInfo) => {
       const jdbcPreparedStatement = jdbcConnection.prepareStatement(SQL_STATEMENT_INSERT);
 
       // 受け渡された書籍情報をＳＱＬ文に設定する
-      jdbcPreparedStatement.setString(1,inputBookInfo.title);
-      jdbcPreparedStatement.setInt(2, inputBookInfo.kind);
-      jdbcPreparedStatement.setString(3,  inputBookInfo.buyDate);
-      jdbcPreparedStatement.setString(4,  inputBookInfo.buyPerson);
-      jdbcPreparedStatement.setString(5,  inputBookInfo.reviewComment);
+      jdbcPreparedStatement.setInt(1, inputBookInfo.bookId);
+      jdbcPreparedStatement.setString(2,inputBookInfo.title);
+      jdbcPreparedStatement.setInt(3, inputBookInfo.kind);
+      jdbcPreparedStatement.setString(4,  inputBookInfo.buyDate);
+      jdbcPreparedStatement.setString(5,  inputBookInfo.buyPerson);
+      jdbcPreparedStatement.setString(6,  inputBookInfo.reviewComment);
 
       //ＩＮＳＥＲＴの実行
       const resultRows = jdbcPreparedStatement.executeUpdate();
