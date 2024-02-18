@@ -4,7 +4,7 @@ import { DATABASE_URL, PASSWORD, USER_NAME } from './dbInfo'
  * 書籍情報をＤＢから取得する。（条件なし）
  * @returns ＤＢから取得した書籍情報の一覧。配列形式。
  */
-export const selectBooksAll = () => {
+export const selectAllBooks = () => {
 
     const SQL_STATEMENT_SELECT = `
       SELECT
@@ -33,7 +33,7 @@ export const selectBooksAll = () => {
       // 　nextとは、ＳＱＬ結果を１件読み込むこと（カーソルの移動）。
       // 　読めればtrueを返し、読めなければ（ATEND）falseを返す。
 
-      let bookRecords = []
+      const bookRecords = []
 
       while (jdbcResultSet.next()) {
 
@@ -72,20 +72,20 @@ export const selectBooksAll = () => {
  * @param {string} searchType 画面で選択した検索方法。searchType_title…タイトル部分一致。searchType_kind…ジャンル完全一致。
  * @returns ＤＢから取得した書籍情報の一覧。配列形式。
  */
-export const selectBooksSearch = (searchText, searchType) => {
+export const selectSearchedBooks = (searchText, searchType) => {
 
   // SQL文のWHERE条件を組み立てる。
   let sqlWhereSentence = 'WHERE '
 
   // 検索条件が「タイトル部分一致」の場合は
   // タイトルの条件文を生成する。
-  if( searchType == 'searchType_title' ){
+  if( searchType === 'searchType_title' ){
     sqlWhereSentence = sqlWhereSentence + `title LIKE '%${searchText}%' `
   }
 
   // 検索条件が「ジャンル完全一致」の場合は
   // ジャンルの条件文を生成する。
-  else if( searchType == 'searchType_kind' ){
+  else if( searchType === 'searchType_kind' ){
     sqlWhereSentence = sqlWhereSentence + `kind = ${ global.getKindKey(searchText) } `
   }
 
@@ -123,7 +123,7 @@ export const selectBooksSearch = (searchText, searchType) => {
     // 　nextとは、ＳＱＬ結果を１件読み込むこと（カーソルの移動）。
     // 　読めればtrueを返し、読めなければ（ATEND）falseを返す。
 
-    let bookRecords = []
+    const bookRecords = []
 
     while (jdbcResultSet.next()) {
 
