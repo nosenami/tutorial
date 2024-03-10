@@ -1,14 +1,14 @@
 /**
  * 本のジャンルの、オブジェクト（コード値とコード名称）の配列。
- *   key：ジャンルのコード値
- *   value：ジャンルのコード名称
+ *   codeValue：ジャンルのコード値
+ *   codeName ：ジャンルのコード名称
  */
 const KIND_NAME_MAP = [
-  { key:0, value:'指定なし' },
-  { key:1, value:'小説' },
-  { key:2, value:'ファンタジー' },
-  { key:3, value:'ミステリ' },
-  { key:4, value:'ＳＦ' }
+  { codeValue:0, codeName:'指定なし' },
+  { codeValue:1, codeName:'小説' },
+  { codeValue:2, codeName:'ファンタジー' },
+  { codeValue:3, codeName:'ミステリ' },
+  { codeValue:4, codeName:'ＳＦ' }
 ]
 
 
@@ -21,11 +21,17 @@ export const getKindName = (kindKey) => {
 
   // 配列内のkeyが引数のコード値と一致した場合に、その配列を受け取る。
   const foundArray = KIND_NAME_MAP.find(
-    (array) => array.key === kindKey
+    (array) => array.codeValue === kindKey
   )
 
   // 受け取った配列のvalue（コード名称）を返す。
-  return foundArray.value
+  // ただし受け取れなかった場合（一致がなかった場合）、空文字を返す。
+  if( foundArray ){
+    return foundArray.codeName
+  }
+  else{
+    return ''
+  }
 
 };
 
@@ -39,13 +45,13 @@ export const getKindKey = (kindName) => {
 
   // 配列内のvalueが引数のコード名称と一致した場合に、その配列を受け取る。
   const foundArray = KIND_NAME_MAP.find(
-    (array) => array.value === kindName
+    (array) => array.codeName === kindName
   )
 
   // 受け取った配列のkey（コード値）を返す。
   // ただし受け取れなかった場合（一致がなかった場合）、存在しないコード値999を返す。
-  if( foundArray !== undefined){
-    return foundArray.key
+  if( foundArray ){
+    return foundArray.codeValue
   }
   else {
     return 999
