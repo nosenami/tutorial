@@ -12,7 +12,7 @@
         <v-toolbar flat>
 
 <!-- 検索 START （将来的にはSearch.vueに記載） - - - - - - - - - -->
-          <v-text-field label="検索条件"></v-text-field>
+          <v-text-field label="検索条件" v-model="searchText" ></v-text-field>
 
           <v-radio-group v-model="searchType" row>
             <v-radio value="searchType_title" label="タイトル 部分一致"></v-radio>
@@ -165,6 +165,8 @@ export default {
       { text: '', value: 'editDelete', sortable: false }
     ],
     bookRecords: [],
+
+    searchText: '',
     searchType: 'searchType_title',
 
     registDialog: false,
@@ -255,7 +257,7 @@ export default {
                 // selectBooksAllが異常終了したら、空情報を設定してから、rejectする。（例外発生となる。）
                 (error) => { this.bookRecords = this.initBookInfo; reject(error);  }
               )
-              .selectBooksAll()
+              .selectAllBooks()
           }
         )
       }
@@ -272,8 +274,35 @@ export default {
     /**
      * 検索ボタン押下時の動作。
      */
-    searchBookButton () {
-      alert('検索ボタン押下時の動作予定。')
+    searchBookButton: async function () {
+
+      // ロード中を示すオーバレイを表示する。
+      this.showOverlay = true;
+
+      try{
+        await new Promise(
+
+          (resolve, reject) => {
+
+            google.script.run
+              .withSuccessHandler(
+                (bookRecords) => { this.bookRecords = bookRecords; resolve(); }
+              )
+              .withFailureHandler(
+                (error) => { this.bookRecords = this.initBookInfo; reject(error);  }
+              )
+              .selectSearchedBooks(this.searchText, this.searchType)
+          }
+        )
+      }
+      catch(e){
+        this.alertErrorMessage(e)
+      }
+      finally{
+        //ロード中を示すオーバレイを非表示にする。
+        this.showOverlay = false;
+      }
+
     },
 
     /**
