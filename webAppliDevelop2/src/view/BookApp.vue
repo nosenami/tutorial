@@ -255,7 +255,7 @@ export default {
               )
               .withFailureHandler(
                 // selectBooksAllが異常終了したら、空情報を設定してから、rejectする。（例外発生となる。）
-                (error) => { this.bookRecords = this.initBookInfo; reject(error);  }
+                (error) => { this.bookRecords = []; reject(error);  }
               )
               .selectAllBooks()
           }
@@ -289,7 +289,7 @@ export default {
                 (bookRecords) => { this.bookRecords = bookRecords; resolve(); }
               )
               .withFailureHandler(
-                (error) => { this.bookRecords = this.initBookInfo; reject(error);  }
+                (error) => { this.bookRecords = []; reject(error);  }
               )
               .selectSearchedBooks(this.searchText, this.searchType)
           }
