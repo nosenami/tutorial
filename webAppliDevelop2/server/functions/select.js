@@ -6,6 +6,31 @@ import { DATABASE_URL, PASSWORD, USER_NAME } from './dbInfo'
  */
 export const selectAllBooks = () => {
 
+
+  const bookRecords = []
+
+  bookRecords.push({
+    bookId : 1,
+    title :'あああ',
+    kind : '1',
+    kindName : 'ＳＦ',
+    buyDate :  new Date().toISOString().substring(0, 10),
+    buyPerson : 'あああ',
+    reviewComment : 'あああ'
+  })
+
+  bookRecords.push({
+    bookId : 2,
+    title :'いいい',
+    kind : '2',
+    kindName : 'ミステリ',
+    buyDate : '20240202' ,
+    buyPerson : 'いいい',
+    reviewComment : 'いいい'
+  })
+
+return bookRecords
+
     const SQL_STATEMENT_SELECT = `
       SELECT
         book_id,
@@ -73,6 +98,24 @@ export const selectAllBooks = () => {
  * @returns ＤＢから取得した書籍情報の一覧。配列形式。
  */
 export const selectSearchedBooks = (searchText, searchType) => {
+
+
+  const bookRecords = []
+
+  bookRecords.push({
+    bookId : 3,
+    title :'ううう',
+    kind : '3',
+    kindName : 'ＳＦ',
+    buyDate :  new Date().toISOString().substring(0, 10),
+    buyPerson : 'ううう',
+    reviewComment : 'ううう'
+  })
+
+
+
+return bookRecords
+
 
   // SQL文のWHERE条件を組み立てる。
   let sqlWhereSentence = 'WHERE '

@@ -21,6 +21,7 @@
 import Vue from 'vue'
 import BookApp from '@/view/BookApp'
 
+
 export default Vue.extend({
   components: {
     BookApp
